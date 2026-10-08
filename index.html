@@ -63,6 +63,11 @@
   .meal.done .t,.meal.skip .t{opacity:.65}
   .meal .d{color:var(--muted);font-size:12px;line-height:1.9;margin-top:3px}
   .meal .air{color:var(--blue);font-size:11.5px;line-height:1.8;margin-top:3px}
+  .meal .alt{color:var(--green);font-size:11.5px;line-height:1.8;margin-top:3px}
+  input.miss{border-color:var(--red)}
+  .noteprev{background:var(--panel-2);border-inline-start:3px solid var(--blue);border-radius:8px;padding:9px 11px;margin-bottom:12px;font-size:12.5px;line-height:1.9}
+  .noteprev b{color:var(--blue);display:block;font-size:11.5px;margin-bottom:3px}
+  textarea.note{width:100%;height:70px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px;font:inherit;font-size:13.5px;margin-top:10px}
   .kcal{color:var(--muted);font-size:11px;white-space:nowrap;text-align:center}
   .item{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
   .item:first-of-type{border-top:0}
@@ -102,7 +107,7 @@
 <div class="wrap">
   <header>
     <h1>برنامه تمرین و رژیم</h1>
-    <div class="sub">۲۳۵۰ کالری · ۱۴۵ گرم پروتئین</div>
+    <div class="sub">۲۰۰۰ کالری · ۱۵۰ گرم پروتئین</div>
   </header>
   <nav>
     <button data-t="train" class="on">تمرین</button>
@@ -180,21 +185,23 @@ const PLAN={
 const ROT=['upperA','lowerA','upperB','lowerB'];
 
 /* ================= رژیم ================= */
+const SUB_CARB='۲۵۰ تا ۳۰۰ گرم سیب‌زمینی = یک پیمانه برنج پخته = سیب‌زمینی شیرین';
+const SUB_CHICKEN='ران مرغ بدون پوست ۱۶۰گ · بوقلمون ۲۰۰گ · ماهی سفید یا تیلاپیا ۲۲۰گ · قزل‌آلا ۱۷۰گ · میگو ۲۲۰گ · تن ماهی در آب ۲ قوطی';
+const SUB_MEAT='استیک گوساله (راسته، فیله، ماهیچه) ۱۶۰گ · فیله گوسفندی ۱۳۰ تا ۱۴۰گ · ماهی ۲۰۰گ · مرغ ۱۸۰گ · بوقلمون چرخ‌کرده ۱۸۰گ · ۲ تخم‌مرغ + ۱۵۰گ عدسی · ۲۵۰گ پنیر کاتیج — همه خام وزن شوند و چربی کنار برش جدا شود. دنده و سردست و گردن جایگزین نیستند، تقریباً دو برابر کالری دارند.';
 const MEALS_TRAIN=[
- {id:'pre',t:'قبل تمرین',d:'یک موز یا ۲ تا ۳ خرما + نیم اسکوپ وی پروتئین در آب',k:165,p:13},
+ {id:'pre',t:'قبل تمرین',d:'یک موز + نیم اسکوپ وی پروتئین در آب',k:165,p:13,alt:'به‌جای موز: ۲ تا ۳ خرما'},
  {id:'whey',t:'بلافاصله بعد تمرین',d:'نیم اسکوپ وی پروتئین در آب یا شیر',k:65,p:12},
- {id:'breakfast',t:'صبحانه، حدود یک ساعت بعد تمرین',d:'۳ عدد تخم‌مرغ + ۳۰ تا ۴۰ گرم نان + یک پیمانه ماست',k:420,p:30},
- {id:'lunch',t:'ناهار',d:'۱۸۰ گرم مرغ خام + ۱.۵ پیمانه برنج پخته + سیب‌زمینی هواپز',k:680,p:45,air:'مرغ: حالت Grill، ۱۰ تا ۱۲ دقیقه، وسط کار برگردان. سیب‌زمینی خلالی ۲۰۰ گرم با یک قاشق چای‌خوری روغن: Air Fry روی ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه، سبد را وسط کار تکان بده.'},
- {id:'snack',t:'میان‌وعده بعدازظهر',d:'یک پیمانه ماست یا ۳۰ گرم مغزها + یک عدد میوه',k:250,p:12},
- {id:'dinner',t:'شام',d:'۱۵۰ تا ۱۸۰ گرم گوشت چرخ‌کرده یا ماهی + عدسی یا نان + سبزیجات هواپز',k:620,p:32,air:'کباب یا ماهی: Grill، ۸ تا ۱۰ دقیقه. سبزیجات (کدو، فلفل دلمه، هویج، قارچ) با کمی روغن و نمک: Air Fry روی ۱۸۰ درجه، ۱۲ تا ۱۵ دقیقه.'},
- {id:'night',t:'شب، فقط اگر پروتئین روز کم مانده',d:'پنیر کاتیج یا نیم اسکوپ وی',k:150,p:20},
+ {id:'breakfast',t:'صبحانه، حدود یک ساعت بعد تمرین',d:'۳ عدد تخم‌مرغ + ۴۰ گرم نان + یک پیمانه ماست ساده',k:410,p:29,air:'تخم‌مرغ در ظرف مقاوم حرارت: ۱۶۰ درجه، ۸ تا ۱۰ دقیقه — بدون روغن. یا آب‌پز، یا نیمرو با اسپری روغن.',alt:'روزهایی که کره بادام‌زمینی می‌خواهی: نان را ۳۰ گرم کن، یک قاشق کره اضافه کن و میان‌وعده را بدون میوه بخور'},
+ {id:'lunch',t:'ناهار',d:'۲۰۰ گرم سینه مرغ خام + ۲۵۰ تا ۳۰۰ گرم سیب‌زمینی + ۲۰۰ گرم سبزیجات',k:580,p:51,air:'مرغ: Grill، ۱۰ تا ۱۲ دقیقه، وسط کار برگردان. سیب‌زمینی: ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه، سبد را تکان بده. سبزیجات: ۱۸۰ درجه، ۱۲ تا ۱۵ دقیقه.',alt:'به‌جای مرغ: '+SUB_CHICKEN+' | کربوهیدرات: '+SUB_CARB},
+ {id:'snack',t:'میان‌وعده بعدازظهر',d:'یک پیمانه ماست یا ۱۵۰ گرم پنیر کاتیج + یک عدد میوه',k:240,p:20},
+ {id:'dinner',t:'شام',d:'۱۸۰ گرم ماهی یا گوشت کم‌چرب + ۲۵۰ گرم سیب‌زمینی + سبزیجات',k:520,p:42,air:'گوشت یا ماهی: Grill، ۸ تا ۱۰ دقیقه. استیک گوساله یا فیله گوسفندی: Grill با حداکثر دما، هر طرف ۴ تا ۵ دقیقه برای متوسط؛ ۲۰ دقیقه قبل از پخت از یخچال دربیاور و ۵ دقیقه بعد از پخت استراحت بده. سیب‌زمینی: ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه.',alt:'به‌جای گوشت: '+SUB_MEAT+' | کربوهیدرات: '+SUB_CARB},
 ];
 const MEALS_REST=[
- {id:'breakfast',t:'صبحانه',d:'۴ عدد تخم‌مرغ + ۴۰ گرم نان + یک پیمانه ماست',k:520,p:40},
- {id:'snack1',t:'میان‌وعده صبح',d:'یک عدد میوه + ۳۰ گرم گردو یا بادام',k:250,p:6},
- {id:'lunch',t:'ناهار',d:'۲۰۰ گرم مرغ خام + ۱.۵ پیمانه برنج پخته + سبزیجات هواپز',k:700,p:50,air:'مرغ: Grill، ۱۰ تا ۱۲ دقیقه. سبزیجات: Air Fry روی ۱۸۰ درجه، ۱۲ تا ۱۵ دقیقه.'},
- {id:'snack2',t:'میان‌وعده بعدازظهر',d:'ماست پرچرب‌کم یا پنیر کاتیج + یک عدد میوه',k:250,p:22},
- {id:'dinner',t:'شام',d:'۱۸۰ گرم گوشت یا ماهی + عدسی + سیب‌زمینی یا سبزیجات هواپز',k:640,p:34,air:'گوشت یا ماهی: Grill، ۸ تا ۱۰ دقیقه. سیب‌زمینی: Air Fry روی ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه.'},
+ {id:'breakfast',t:'صبحانه',d:'۳ عدد تخم‌مرغ + ۴۰ گرم نان + یک پیمانه ماست ساده',k:410,p:29,air:'تخم‌مرغ در ظرف مقاوم حرارت: ۱۶۰ درجه، ۸ تا ۱۰ دقیقه. یا آب‌پز، یا نیمرو با اسپری روغن.'},
+ {id:'snack1',t:'میان‌وعده صبح',d:'۳۰ گرم گردو یا بادام + یک عدد میوه',k:250,p:6},
+ {id:'lunch',t:'ناهار',d:'۲۰۰ گرم سینه مرغ خام + ۲۵۰ تا ۳۰۰ گرم سیب‌زمینی + ۲۰۰ گرم سبزیجات',k:580,p:51,air:'مرغ: Grill، ۱۰ تا ۱۲ دقیقه. سیب‌زمینی: ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه. سبزیجات: ۱۸۰ درجه، ۱۲ تا ۱۵ دقیقه.',alt:'به‌جای مرغ: '+SUB_CHICKEN+' | کربوهیدرات: '+SUB_CARB},
+ {id:'snack2',t:'میان‌وعده بعدازظهر',d:'یک پیمانه ماست یا ۱۵۰ گرم پنیر کاتیج',k:180,p:20},
+ {id:'dinner',t:'شام',d:'۱۸۰ گرم ماهی یا گوشت کم‌چرب + ۲۵۰ گرم سیب‌زمینی + عدسی + سبزیجات',k:580,p:42,air:'گوشت یا ماهی: Grill، ۸ تا ۱۰ دقیقه. سیب‌زمینی: ۱۹۰ درجه، ۱۸ تا ۲۰ دقیقه.',alt:'به‌جای گوشت: '+SUB_MEAT+' | کربوهیدرات: '+SUB_CARB},
 ];
 const MEAL_NAME={};[...MEALS_TRAIN,...MEALS_REST].forEach(m=>MEAL_NAME[m.id]=m.t);
 
@@ -212,15 +219,8 @@ const BODY=[
 ];
 
 /* ================= سابقه تمرین ================= */
-const SEED=[
- {j:[1405,5,18],workout:'upperA',e:{bench:{weight:20,reps:[7,7,7,7]},row:{weight:15,reps:[8,8,8,8]},ohp:{weight:10,reps:[8,8,8]},pulldown:{weight:27,reps:[10,10,10]},inccurl:{weight:15,reps:[12,12]},triext:{weight:18,reps:[12,12]}}},
- {j:[1405,5,19],workout:'lowerA',e:{squat:{weight:25,reps:[6,8,7,7]},rdl:{weight:25,reps:[7,8,8]},legpress:{weight:70,reps:[8,8,8]},calf:{weight:60,reps:[12,12]},ccrunch:{weight:5,reps:[10,10,15]},hlr:{weight:null,reps:[12,10,10]}}},
- {j:[1405,5,24],workout:'upperB',e:{incdb:{weight:20,reps:[12]},csrow:{weight:15,reps:[12,12,12]},dbohp:{weight:20,reps:[12,12,12]},pullup:{weight:null,reps:[3,3,3]},lateral:{weight:10,reps:[15,12,12]},facepull:{weight:25,reps:[15,15,15]},armss:{weight:35,reps:[12,12]}}},
- {j:[1405,5,25],workout:'lowerB',e:{deadlift:{weight:30,reps:[5,5,5]},bulgarian:{weight:5,reps:[8,10,8]},legcurl:{weight:25,reps:[12,12,12]},legext:{weight:39,reps:[12,14]},abwheel:{weight:null,reps:[12,8]},woodchop:{weight:15,reps:[12,12]}}},
- {j:[1405,5,29],workout:'upperA',e:{bench:{weight:30,reps:[7,7,7,6]},row:{weight:20,reps:[12,12,12,12]},ohp:{weight:12.5,reps:[12,12,12]},pulldown:{weight:50,reps:[10,10,10]},inccurl:{weight:20,reps:[12,12]},triext:{weight:25,reps:[12,12]}}},
- {j:[1405,5,30],workout:'lowerA',e:{squat:{weight:40,reps:[7,7,7]},rdl:{weight:30,reps:[8,8,8]},legpress:{weight:80,reps:[10,10,10]},calf:{weight:70,reps:[12,12,12]},ccrunch:{weight:23,reps:[15,15,15]},hlr:{weight:null,reps:[6,7,8]}}},
- {j:[1405,6,9],workout:'upperB',e:{incdb:{weight:25,reps:[8,9]},csrow:{weight:20,reps:[12,12,12]},dbohp:{weight:25,reps:[12,8,6]},pullup:{weight:null,reps:[5,5,5]},lateral:{weight:10,reps:[12,15,15]},facepull:{weight:32,reps:[12,15,12]}}},
-];
+const SEED_SESSIONS=[{"date":"2026-08-09","workout":"upperA","e":{"bench":{"weight":20,"reps":[7,7,7,7]},"row":{"weight":15,"reps":[8,8,8,8]},"ohp":{"weight":10,"reps":[8,8,8]},"pulldown":{"weight":27,"reps":[10,10,10]},"inccurl":{"weight":15,"reps":[12,12]},"triext":{"weight":18,"reps":[12,12]}}},{"date":"2026-08-10","workout":"lowerA","e":{"squat":{"weight":25,"reps":[6,8,7,7]},"rdl":{"weight":25,"reps":[7,8,8]},"legpress":{"weight":70,"reps":[8,8,8]},"calf":{"weight":60,"reps":[12,12]},"ccrunch":{"weight":5,"reps":[10,10,15]},"hlr":{"weight":null,"reps":[12,10,10]}}},{"date":"2026-08-15","workout":"upperB","e":{"incdb":{"weight":20,"reps":[12]},"csrow":{"weight":15,"reps":[12,12,12]},"dbohp":{"weight":20,"reps":[12,12,12]},"pullup":{"weight":null,"reps":[3,3,3]},"lateral":{"weight":10,"reps":[15,12,12]},"facepull":{"weight":25,"reps":[15,15,15]},"armss":{"weight":35,"reps":[12,12]}}},{"date":"2026-08-16","workout":"lowerB","e":{"deadlift":{"weight":30,"reps":[5,5,5]},"bulgarian":{"weight":5,"reps":[8,10,8]},"legcurl":{"weight":25,"reps":[12,12,12]},"legext":{"weight":39,"reps":[12,14]},"abwheel":{"weight":null,"reps":[12,8]},"woodchop":{"weight":15,"reps":[12,12]}}},{"date":"2026-08-20","workout":"upperA","e":{"bench":{"weight":30,"reps":[7,7,7,6]},"row":{"weight":20,"reps":[12,12,12,12]},"ohp":{"weight":12.5,"reps":[12,12,12]},"pulldown":{"weight":50,"reps":[10,10,10]},"inccurl":{"weight":20,"reps":[12,12]},"triext":{"weight":25,"reps":[12,12]}}},{"date":"2026-08-21","workout":"lowerA","e":{"squat":{"weight":40,"reps":[7,7,7]},"rdl":{"weight":30,"reps":[8,8,8]},"legpress":{"weight":80,"reps":[10,10,10]},"calf":{"weight":70,"reps":[12,12,12]},"ccrunch":{"weight":23,"reps":[15,15,15]},"hlr":{"weight":null,"reps":[6,7,8]}}},{"date":"2026-08-31","workout":"upperB","e":{"incdb":{"weight":25,"reps":[8,9]},"csrow":{"weight":20,"reps":[12,12,12]},"dbohp":{"weight":25,"reps":[12,8,6]},"pullup":{"weight":null,"reps":[5,5,5]},"lateral":{"weight":10,"reps":[12,15,15]},"facepull":{"weight":32,"reps":[12,15,12]}}},{"date":"2026-09-02","workout":"lowerB","e":{"deadlift":{"weight":35,"reps":[5,5,5]},"bulgarian":{"weight":5,"reps":[10,10,10]},"legcurl":{"weight":30,"reps":[12,12,10]},"legext":{"weight":39,"reps":[15,15]},"abwheel":{"weight":null,"reps":[12,12,12]},"woodchop":{"weight":18,"reps":[15,12]}}},{"date":"2026-09-05","workout":"upperA","e":{"bench":{"weight":30,"reps":[7,7,7,7]},"row":{"weight":22.5,"reps":[8,8,8,8]},"ohp":{"weight":15,"reps":[8,8,8]},"pulldown":{"weight":52,"reps":[8,7,5]},"inccurl":{"weight":20,"reps":[7,8]},"triext":{"weight":27,"reps":[12,null]}}},{"date":"2026-09-07","workout":"lowerA","e":{"squat":{"weight":50,"reps":[7,7,7,7]},"rdl":{"weight":35,"reps":[8,8,8]},"legpress":{"weight":150,"reps":[8,8,7]},"calf":{"weight":75,"reps":[10,12,12]},"ccrunch":{"weight":32,"reps":[11,15,15]},"hlr":{"weight":null,"reps":[7,8,7]}}},{"date":"2026-09-09","workout":"upperB","e":{"incdb":{"weight":25,"reps":[12,12,12]},"csrow":{"weight":25,"reps":[12,12,12]},"dbohp":{"weight":20,"reps":[12,12,12]},"pullup":{"weight":null,"reps":[6,5,7]},"lateral":{"weight":10,"reps":[15,15,15]},"facepull":{"weight":25,"reps":[15,15,15]}}},{"date":"2026-09-15","workout":"upperA","e":{"bench":{"weight":30,"reps":[7,7,7,7]},"row":{"weight":27.5,"reps":[8,8,8,8]},"ohp":{"weight":17.5,"reps":[8,8,8]},"pulldown":{"weight":45,"reps":[10,10,8]},"inccurl":{"weight":15,"reps":[12,12]},"triext":{"weight":30,"reps":[12,12]}}},{"date":"2026-09-16","workout":"lowerA","e":{"squat":{"weight":55,"reps":[7,7,7,7]},"rdl":{"weight":40,"reps":[8,8,8]},"legpress":{"weight":150,"reps":[10,10,10]},"calf":{"weight":80,"reps":[12,12,12]},"ccrunch":{"weight":46,"reps":[12,15,15]},"hlr":{"weight":null,"reps":[8,8,9]}}},{"date":"2026-09-21","workout":"upperB","e":{"incdb":{"weight":30,"reps":[12,12,12]},"csrow":{"weight":30,"reps":[12,12,12]},"dbohp":{"weight":25,"reps":[12,12,6]},"pullup":{"weight":null,"reps":[5,8,6]},"lateral":{"weight":12,"reps":[12,12,12]},"facepull":{"weight":35,"reps":[15,15,15]},"armss":{"weight":25,"reps":[12,12]}}},{"date":"2026-09-21","workout":"lowerB","e":{"deadlift":{"weight":50,"reps":[5,5,5]},"bulgarian":{"weight":15,"reps":[10,10,10]},"legcurl":{"weight":40,"reps":[10,10,10]},"legext":{"weight":57,"reps":[15,15]},"abwheel":{"weight":null,"reps":[12,12,12]},"woodchop":{"weight":36,"reps":[12,12]}}},{"date":"2026-09-24","workout":"upperA","e":{"bench":{"weight":35,"reps":[7,7,7,7]},"row":{"weight":35,"reps":[8,8,8,8]},"ohp":{"weight":20,"reps":[8,11,8]},"pulldown":{"weight":45,"reps":[10,10,10]},"inccurl":{"weight":20,"reps":[10,9]},"triext":{"weight":54,"reps":[12,12]}}},{"date":"2026-09-27","workout":"lowerA","e":{"squat":{"weight":60,"reps":[7,7,7,7]},"rdl":{"weight":45,"reps":[8,8,8]},"legpress":{"weight":160,"reps":[10,10,10]},"calf":{"weight":90,"reps":[12,12,12]},"ccrunch":{"weight":73,"reps":[15,15,15]},"hlr":{"weight":null,"reps":[9,9,10]}}},{"date":"2026-10-01","workout":"upperB","e":{"incdb":{"weight":40,"reps":[12,12,12]},"csrow":{"weight":40,"reps":[12,12,12]},"dbohp":{"weight":25,"reps":[12,10,12]},"pullup":{"weight":null,"reps":[8,9,8]},"lateral":{"weight":15,"reps":[12,12,12]},"facepull":{"weight":50,"reps":[15,15,15]},"armss":{"weight":45,"reps":[12,12]}}},{"date":"2026-10-01","workout":"lowerB","e":{"deadlift":{"weight":65,"reps":[5,5,3]},"bulgarian":{"weight":20,"reps":[10,10,10]},"legcurl":{"weight":64,"reps":[12,12,12]},"legext":{"weight":57,"reps":[15,15]},"abwheel":{"weight":null,"reps":[15,15,15]},"woodchop":{"weight":41,"reps":[15,12]}}},{"date":"2026-10-08","workout":"upperA","e":{"bench":{"weight":40,"reps":[5,5,5,5]},"row":{"weight":40,"reps":[8,8,8,8]},"ohp":{"weight":25,"reps":[8,8,8]},"pulldown":{"weight":50,"reps":[10,10,10]},"inccurl":{"weight":20,"reps":[11,10]},"triext":{"weight":56.5,"reps":[12,12]}}},{"date":"2026-10-08","workout":"lowerA","e":{"squat":{"weight":80,"reps":[7,7,7,7]},"rdl":{"weight":50,"reps":[8,8,8]},"legpress":{"weight":170,"reps":[10,10,10]},"calf":{"weight":100,"reps":[10,12,12]},"ccrunch":{"weight":75.5,"reps":[15,15,15]},"hlr":{"weight":null,"reps":[10,11,11]}}}];
+const SEED_LAST_DELOAD='2026-09-15';
 
 /* ================= وضعیت ================= */
 const KEY='zaadmehr-fit-v2';
@@ -238,7 +238,12 @@ async function load(){
  try{const v=await rawGet();if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}
  if(!S.shop)S.shop=SHOP.flatMap(g=>g.i.map(n=>({c:g.c,n,done:false})));
  if(!S.dietMode)S.dietMode={};
- if(!S.seeded){SEED.forEach(s=>S.sessions.push({date:jToIso(s.j[0],s.j[1],s.j[2]),workout:s.workout,e:s.e}));S.seeded=true;S.sessions.sort((a,b)=>a.date<b.date?-1:1);await save()}
+ if((S.seedVer||0)<3){
+  const key=s=>s.date+'|'+s.workout,have=new Set(S.sessions.map(key));
+  SEED_SESSIONS.forEach(s=>{if(!have.has(key(s)))S.sessions.push(JSON.parse(JSON.stringify(s)))});
+  if(!S.lastDeload)S.lastDeload=SEED_LAST_DELOAD;
+  S.seedVer=3;S.seeded=true;S.sessions.sort((a,b)=>a.date<b.date?-1:1);await save();
+ }
  draftWorkout=nextWorkout();
 }
 function lastSession(){return S.sessions.length?S.sessions[S.sessions.length-1]:null}
@@ -317,6 +322,15 @@ function jpicker(id,s){
  return`<div class="jd"><select data-jp="${id}" data-part="d">${ds.join('')}</select><select data-jp="${id}" data-part="m">${ms}</select><select data-jp="${id}" data-part="y">${ys.join('')}</select></div>`;
 }
 
+/* ================= یادداشت حرکت ================= */
+function exNotePrev(exId){
+ for(let i=S.sessions.length-1;i>=0;i--){
+  const en_=S.sessions[i].e&&S.sessions[i].e[exId];
+  if(en_&&en_.note&&en_.note.trim())return`<div class="noteprev" style="margin:10px 0 0"><b>یادداشت قبلی — ${jshort(S.sessions[i].date)}</b>${en_.note.replace(/</g,'&lt;')}</div>`;
+ }
+ return '';
+}
+
 /* ================= نماها ================= */
 function vTrain(){
  const wk=draftWorkout,W=PLAN[wk],adv=deloadAdvice(),ls=lastSession(),nx=nextWorkout();
@@ -340,6 +354,8 @@ function vTrain(){
    ${tips}
    <div class="tip ${s.cls}"><b>${s.head}</b><span class="why">${s.why}</span></div>
    <div class="sets">${wf}${flds}</div>
+   ${exNotePrev(ex.id)}
+   <textarea class="note exnote" data-exnote="${ex.id}" placeholder="یادداشت این حرکت — مثلاً تنظیم صندلی، درد، حس فرم"></textarea>
    <button class="restbtn" data-rest="${ex.sec}" data-name="${ex.fa}">ست تمام شد — شروع استراحت ${ex.rest}</button></div>`;
  }).join('');
  return`${lastCard}${adv?`<div class="banner"><b>${adv.due?'وقت هفته دیلود':'وضعیت دیلود'}</b><br>${adv.text}</div>`:''}
@@ -365,7 +381,7 @@ function vDiet(){
  const rows=M.meals.map(m=>{const st=log[m.id];
   return`<div class="meal ${st===true?'done':st===false?'skip':''}" data-meal="${m.id}">
    <div class="box">${st===true?'✓':st===false?'✕':''}</div>
-   <div style="flex:1"><div class="t">${m.t}</div><div class="d">${m.d}</div>${m.air?`<div class="air">هواپز نینجا: ${m.air}</div>`:''}</div>
+   <div style="flex:1"><div class="t">${m.t}</div><div class="d">${m.d}</div>${m.air?`<div class="air">هواپز نینجا: ${m.air}</div>`:''}${m.alt?`<div class="alt">جایگزین: ${m.alt}</div>`:''}</div>
    <div class="kcal">${fa(m.k)} کالری<br>${fa(m.p)} گرم پروتئین</div></div>`}).join('');
  const done=M.meals.filter(m=>log[m.id]===true),k=done.reduce((a,m)=>a+m.k,0),p=done.reduce((a,m)=>a+m.p,0);
  const tk=M.meals.reduce((a,m)=>a+m.k,0),tp=M.meals.reduce((a,m)=>a+m.p,0);
@@ -481,13 +497,25 @@ document.addEventListener('click',async e=>{
  if(t.dataset&&t.dataset.tip){openTip=openTip===t.dataset.tip?null:t.dataset.tip;render();return}
  if(t.id==='dl'){S.deload=!S.deload;if(S.deload)S.lastDeload=today();await save();render();return}
  if(t.id==='savew'){
-  const wk=draftWorkout,ent={};let any=false;
+  const wk=draftWorkout,ent={},missing=[];
+  document.querySelectorAll('input.miss').forEach(i=>i.classList.remove('miss'));
   PLAN[wk].list.forEach(ex=>{
    const w=document.querySelector(`[data-ex="${ex.id}"][data-w]`);
-   const reps=[...document.querySelectorAll(`[data-ex="${ex.id}"][data-set]`)].map(i=>num(i.value));
-   if(reps.some(r=>r!=null)){any=true;ent[ex.id]={weight:w?num(w.value):null,reps}}
+   const boxes=[...document.querySelectorAll(`[data-ex="${ex.id}"][data-set]`)];
+   let bad=false;
+   if(w&&num(w.value)==null){w.classList.add('miss');bad=true}
+   const reps=boxes.map(i=>{const v=num(i.value);if(v==null){i.classList.add('miss');bad=true}return v});
+   if(bad)missing.push(ex.fa);
+   const nb=document.querySelector(`[data-exnote="${ex.id}"]`),nv=nb?nb.value.trim():'';
+   ent[ex.id]={weight:w?num(w.value):null,reps};
+   if(nv)ent[ex.id].note=nv;
   });
-  if(!any){toast('حداقل تکرار یک حرکت را وارد کن');return}
+  if(missing.length){
+   const first=document.querySelector('input.miss');
+   if(first)first.scrollIntoView({block:'center',behavior:'smooth'});
+   toast('این‌ها ناقص است: '+missing.slice(0,3).join('، ')+(missing.length>3?' و…':''));
+   return;
+  }
   S.sessions.push({date:today(),workout:wk,e:ent});
   S.sessions.sort((a,b)=>a.date<b.date?-1:1);
   sessionStart=null;restEnd=null;
